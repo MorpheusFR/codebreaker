@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["MorpheusFR"]
   spec.email         = ["Creatorsk@gmail.com"]
 
-  spec.summary       = %q{My codebraker}
+  spec.summary       = %q{My codebreaker}
   spec.description   = %q{A game based on bull and cow rules.}
   # spec.homepage      = "URL here."
   spec.license       = "MIT"
