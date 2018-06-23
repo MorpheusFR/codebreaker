@@ -2,6 +2,10 @@ module Codebreaker
   ATTEMPTS = 6
   HINTS = 4
 
+  LOOS = "... You won!!! ..."
+
+  WON = "... You loos :( ..."
+
   RULES =
   " The code-breaker then gets some number of chances to break the code.\n " \
   " In each turn, the code-breaker makes a guess of four numbers.\n "        \

@@ -12,12 +12,36 @@ module Codebreaker
     end
 
     def play_session
-      case user_input = input_data
-      when 'rules' then show_rules
-      when 'hint' then give_hint
-      else
-        show result_on_input_data user_input
+      until @game.total_attempts.zero?
+        show_statistic
+        case user_input = input_data
+        when 'rules' then show_rules
+        when 'hint' then @game.get_a_hint
+        else show result_on_input_data user_input
+        end
+        break if @game.winner?
       end
+
+      @game.winner ? the_view_for_the_winner : the_view_for_the_loser
+    end
+
+    def show_statistic
+      puts "Play session".center(80)
+      puts "Total attepts = (#{@game.total_attempts})".center(80)
+      puts "................................................................................"
+      puts "Secret code (decorate)  = [#{@game.code_view_with_hint}]".center(80)
+      # puts "Input code (user input)= [#{input_code}]"
+      puts "Result (hit statistics) = [#{@game.match_result}]".center(80)
+      puts "Try to break the code 'input code' or ask for a 'hint'".center(80)
+      puts "................................................................................"
+    end
+
+    def the_view_for_the_winner
+      show WON
+    end
+
+    def the_view_for_the_loser
+      show LOOS
     end
 
     def show(str)
@@ -37,6 +61,7 @@ module Codebreaker
 
     def give_hint
       puts 'Give hint'
+      @path.hint
     end
 
     def show_congrats
