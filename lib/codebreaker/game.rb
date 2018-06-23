@@ -25,13 +25,15 @@ module Codebreaker
     end
     
     def validate_turn(input_code)
-      puts "Validate_turn this = #{input_code.class}"
+      # puts "Validate_turn this = #{input_code.class}"
       data_checking input_code
-      puts 'Data checking completed!'
       find_cows_and_bulls input_code
-      puts 'Gets input_code to find_cows_and_bulls!'
+      puts "Total attepts (prew)   = (#{@total_attempts})"
       @total_attempts -= 1
-      @result
+      puts "Total attepts (next)   = (#{@total_attempts})"
+      puts "Secret code            = [#{@secret_code}]"
+      puts "Secret code (decorate) = [#{code_view_with_hint}]"
+      puts "Result                 = [#{@result}]"
     end
 
     def inbound_processing(input_code)
@@ -39,7 +41,6 @@ module Codebreaker
       @attempts -= 1
     end
 
-    
     private
 
     def code_generator
@@ -47,18 +48,16 @@ module Codebreaker
     end
 
     def code_view_with_hint
-      puts(@secret_code.slice(0, @hints_used) <<
-      @secret_code.slice(@hints_used, @secret_code.size).tr(@secret_code, '*'))
+      @secret_code.slice(0, @hints_used) <<
+      @secret_code.slice(@hints_used, @secret_code.size).tr(@secret_code, '*')
     end
 
     def data_checking(input_code)
       raise ArgumentError, 'Type only integers from 1 to 6' if input_code =~ /[^0-6]/
-      # raise ArgumentError, 'Type exactly 4 integer' unless input_code.length == 4
+      raise ArgumentError, 'Type exactly 4 integer' unless input_code.length == 4
     end
 
     def find_cows_and_bulls(input_code)
-      # p "Secret code = #{@secret_code.chars}"
-      # puts input_code
       input_code.each_char.with_index do |elem, i|
         @result << if @secret_code.include?(elem)
           if input_code[i] == @secret_code[i]
@@ -70,8 +69,6 @@ module Codebreaker
           ' '
         end
       end
-      p "Result seching = [#{@result}]"
     end
   end
 end
-# Codebreaker::Game.new
