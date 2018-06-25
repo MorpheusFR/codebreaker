@@ -35,5 +35,7 @@ module Codebreaker
   '                              GOOD LUCK!                                ' \
   .freeze
 
-  PATH_TO_LOG_FILES = './tmp/log_file.txt'.freeze
+  PATH_TO_LOG_FILES = './log_file.txt'.freeze
+
+  LINE = "..................................................................".freeze
 end

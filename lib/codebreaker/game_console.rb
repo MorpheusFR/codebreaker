@@ -1,3 +1,4 @@
+require 'yaml'
 module Codebreaker
   # Interface for console game 'Codebreacker''
   class GameConsole
@@ -26,21 +27,44 @@ module Codebreaker
     end
 
     def show_statistic
-      puts "Play session".center(80)
-      puts "Total attepts = (#{@game.total_attempts})".center(80)
-      puts "................................................................................"
-      puts "Secret code (decorate)  = [#{@game.code_view_with_hint}]".center(80)
-      puts "Result (hit statistics) = [#{@game.match_result}]".center(80)
-      puts "Try to break the code 'input code' or ask for a 'hint'(#{@game.hints})".center(80)
-      puts "................................................................................"
+      puts "Play session - turn #{@game.turn}".center(60)
+      puts "Total attepts = (#{@game.total_attempts})".center(60)
+      show LINE
+      puts "Secret code (decorate)  = [#{@game.code_view_with_hint}]".center(60)
+      puts "Result (hit statistics) = [#{@game.match_result}]".center(60)
+      puts "Try to break the code 'input code' or ask for a 'hint'(#{@game.hints})".center(60)
+      show LINE
     end
 
     def the_view_for_the_winner
       show WON
+      finish_or_reset_game
     end
 
     def the_view_for_the_loser
+      show THE_HINTS_ENDED
+      puts "Secret code = [#{@game.code_view_with_hint}]"
       show LOOS
+      finish_or_reset_game
+    end
+
+    def finish_or_reset_game
+      save_result
+      # final_choice_of_action
+    end
+
+    def save_result
+      user_name = get_user_name
+      p user_name
+      session_statistic = @game.turn_statistic
+      log = { user_name.to_s => [session_statistic, 'hints_get' => @game.hints] }
+      p log
+      File.write(PATH_TO_LOG_FILES, log.to_yaml)
+    end
+
+    def get_user_name
+      p "Enter your name: "
+      gets.chomp
     end
 
     def show(str)
@@ -50,7 +74,7 @@ module Codebreaker
     def result_on_input_data(input_data)
       @game.validate_turn input_data
     rescue ArgumentError => err
-      err = 'ArgumentError message'
+      err = 'ArgumentError message: invalid value, try retrying!'
     end
 
     def input_data

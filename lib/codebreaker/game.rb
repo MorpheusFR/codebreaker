@@ -1,7 +1,7 @@
 module Codebreaker
   # Comment to rubocop
   class Game
-    attr_reader :input_code, :hints, :total_attempts, :match_result
+    attr_reader :input_code, :hints, :total_attempts, :match_result, :turn, :turn_statistic
 
     def initialize
       @secret_code = code_generator
@@ -9,6 +9,8 @@ module Codebreaker
       @hints = HINTS
       @hints_used = 0
       @match_result = ''
+      @turn = 1
+      @turn_statistic = {}
     end
 
     # def new_game
@@ -29,8 +31,9 @@ module Codebreaker
       # puts "Total attepts (next)   = (#{@total_attempts})"
       # puts "Secret code            = [#{@secret_code}]"
       # puts "Secret code (decorate) = [#{code_view_with_hint}]"
-      puts "Input code (user input)= [#{input_code}]"
+      # puts "Input code (user input)= [#{input_code}]"
       # puts "Result                 = [#{@match_result}]"
+      @turn += 1
     end
 
     def inbound_processing(input_code)
@@ -74,6 +77,7 @@ module Codebreaker
     end
 
     def data_checking(input_code)
+      @turn_statistic[@turn] = input_code
       raise ArgumentError, 'Type only integers from 1 to 6' if input_code =~ /[^0-6]/
       raise ArgumentError, 'Type exactly 4 integer' unless input_code.length == 4
     end
