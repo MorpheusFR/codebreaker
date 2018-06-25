@@ -19,10 +19,10 @@ module Codebreaker
         when 'hint' then @game.get_a_hint
         else show result_on_input_data user_input
         end
-        break if @game.winner?
+        break if @game.winner? || @game.hints.zero?
       end
 
-      @game.winner ? the_view_for_the_winner : the_view_for_the_loser
+      @game.winner? ? the_view_for_the_winner : the_view_for_the_loser
     end
 
     def show_statistic
@@ -30,9 +30,8 @@ module Codebreaker
       puts "Total attepts = (#{@game.total_attempts})".center(80)
       puts "................................................................................"
       puts "Secret code (decorate)  = [#{@game.code_view_with_hint}]".center(80)
-      # puts "Input code (user input)= [#{input_code}]"
       puts "Result (hit statistics) = [#{@game.match_result}]".center(80)
-      puts "Try to break the code 'input code' or ask for a 'hint'".center(80)
+      puts "Try to break the code 'input code' or ask for a 'hint'(#{@game.hints})".center(80)
       puts "................................................................................"
     end
 
@@ -52,16 +51,10 @@ module Codebreaker
       @game.validate_turn input_data
     rescue ArgumentError => err
       err = 'ArgumentError message'
-      #err.message
     end
 
     def input_data
       gets.chomp.downcase
-    end
-
-    def give_hint
-      puts 'Give hint'
-      @path.hint
     end
 
     def show_congrats
