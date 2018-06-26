@@ -2,26 +2,25 @@ require 'yaml'
 module Codebreaker
   # Interface for console game 'Codebreacker''
   class GameConsole
-    def initialize #(game = Codebreaker::Game.new)
-      @game = Codebreaker::Game.new #game
+    def initialize
+      @game = Codebreaker::Game.new
       @path_to_file = PATH_TO_LOG_FILES
       @status = false
     end
 
     def start_game
       show_congrats
-      initialize
+      @game = Codebreaker::Game.new
       play_session
     end
 
     def play_session
-      # show_statistic
       until @game.total_attempts.zero?
         show_statistic
         case user_input = input_data
         when 'rules' then show_rules
         when 'hint' then @game.get_a_hint
-        else show result_on_input_data user_input
+        else show result_on_input_data(user_input)
         end
         break if @game.winner? || @game.hints.zero?
       end
@@ -29,9 +28,13 @@ module Codebreaker
       @game.winner? ? the_view_for_the_winner : the_view_for_the_loser
     end
 
+    def input_data
+      gets.chomp.downcase
+    end
+
     def show_statistic
-      puts "Play session - turn #{@game.turn}".center(60)
-      puts "Total attepts = (#{@game.total_attempts})".center(60)
+      # show GAME_TURN + @game.turn.to_s
+      puts 'Total attepts = (' + @game.total_attempts.to_s + ')'
       show LINE
       puts "Secret code (decorate)  = [#{@game.code_view_with_hint}]".center(60)
       puts "Result (hit statistics) = [#{@game.match_result}]".center(60)
@@ -54,7 +57,7 @@ module Codebreaker
 
     def finish_or_reset_game
       save_result
-      puts "You a ready restart game? (y/n)"
+      show RESTART_OR_BREAK
       start_game if input_data == 'y'
     end
 
@@ -62,7 +65,6 @@ module Codebreaker
       File.open(@path_to_file, 'a') do |f|
         f.puts get_data_to_save_statistic
       end
-      # File.write(PATH_TO_LOG_FILES, log.to_yaml)
     end
 
     def get_data_to_save_statistic
@@ -70,15 +72,14 @@ module Codebreaker
       game_result = @status ? 'Win' : 'Loos'
       session_statistic = @game.turn_statistic
       log = { user_name.to_s => [
-                                session_statistic, 
-                                'hints_get' => @game.hints, 
+                                "Date: #{session_statistic}",
+                                'hints geting' => @game.hints_used,
                                 'Status of game' => game_result
                                 ] }
-      #p log
     end
 
     def get_user_name
-      p "Enter your name: "
+      show NAME_USER
       gets.chomp
     end
 
@@ -87,13 +88,11 @@ module Codebreaker
     end
 
     def result_on_input_data(input_data)
-      @game.validate_turn input_data
-    rescue ArgumentError => err
-      err = 'ArgumentError message: invalid value, try retrying!'
-    end
-
-    def input_data
-      gets.chomp.downcase
+      begin
+        @game.validate_turn input_data
+      rescue ArgumentError
+        'ArgumentError message: invalid value, try retrying!'
+      end
     end
 
     def show_congrats

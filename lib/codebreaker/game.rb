@@ -1,7 +1,7 @@
 module Codebreaker
-  # Comment to rubocop
+  # Module Game - logic
   class Game
-    attr_reader :input_code, :hints, :total_attempts, :match_result, :turn, :turn_statistic
+    attr_reader :hints, :hints_used, :total_attempts, :match_result, :turn, :turn_statistic
 
     def initialize
       @secret_code = code_generator
@@ -13,31 +13,19 @@ module Codebreaker
       @turn_statistic = {}
     end
 
-    # def new_game
-    #   puts 'Start new game!'
-    #   code_generator
-    #   puts 'Code generator completed!'
-    #   code_view_with_hint
-    #   puts 'Code_view_with_hint completed!'
-    #   data_checking
-    #   find_cows_and_bulls
-    # end
-
     def validate_turn(input_code)
       data_checking input_code
       find_cows_and_bulls input_code
-      # puts "Total attepts (prew)   = (#{@total_attempts})"
+      counter_attepmpts_and_turn
+    end
+
+    def counter_attepmpts_and_turn
       @total_attempts -= 1
-      # puts "Total attepts (next)   = (#{@total_attempts})"
-      # puts "Secret code            = [#{@secret_code}]"
-      # puts "Secret code (decorate) = [#{code_view_with_hint}]"
-      # puts "Input code (user input)= [#{input_code}]"
-      # puts "Result                 = [#{@match_result}]"
-      @turn += 1
+      GAME_TURN + "#{@turn += 1}"
     end
 
     def inbound_processing(input_code)
-      data_checking(input_code)
+      data_checking input_code
       @attempts -= 1
     end
 

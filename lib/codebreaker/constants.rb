@@ -1,13 +1,14 @@
 module Codebreaker
   ATTEMPTS = 6
   HINTS = 4
-
+  PATH_TO_LOG_FILES = './scores.yml'.freeze
+  GAME_TURN = "Play turn/attempt "
   WON = "... You won!!! ...".freeze
-
   LOOS = "... You loos :( ...".freeze
-
   THE_HINTS_ENDED = "You are losing because the tips have ended".freeze
-
+  RESTART_OR_BREAK = "You a ready play more? (y/n)".freeze
+  NAME_USER = "Enter your name:".freeze
+  
   RULES =
   " The code-breaker then gets some number of chances to break the code.\n " \
   " In each turn, the code-breaker makes a guess of four numbers.\n "        \
@@ -34,8 +35,6 @@ module Codebreaker
   " code of four numbers between 1 and 6. \n #{RULES} \n  "                  \
   '                              GOOD LUCK!                                ' \
   .freeze
-
-  PATH_TO_LOG_FILES = './log_file.txt'.freeze
 
   LINE = "..................................................................".freeze
 end
