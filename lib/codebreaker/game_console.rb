@@ -2,17 +2,20 @@ require 'yaml'
 module Codebreaker
   # Interface for console game 'Codebreacker''
   class GameConsole
-    def initialize(game = Codebreaker::Game.new)
-      @game = game
-      @path = PATH_TO_LOG_FILES
+    def initialize #(game = Codebreaker::Game.new)
+      @game = Codebreaker::Game.new #game
+      @path_to_file = PATH_TO_LOG_FILES
+      @status = false
     end
 
     def start_game
       show_congrats
+      initialize
       play_session
     end
 
     def play_session
+      # show_statistic
       until @game.total_attempts.zero?
         show_statistic
         case user_input = input_data
@@ -38,6 +41,7 @@ module Codebreaker
 
     def the_view_for_the_winner
       show WON
+      @status = true
       finish_or_reset_game
     end
 
@@ -50,16 +54,27 @@ module Codebreaker
 
     def finish_or_reset_game
       save_result
-      # final_choice_of_action
+      puts "You a ready restart game? (y/n)"
+      start_game if input_data == 'y'
     end
 
     def save_result
+      File.open(@path_to_file, 'a') do |f|
+        f.puts get_data_to_save_statistic
+      end
+      # File.write(PATH_TO_LOG_FILES, log.to_yaml)
+    end
+
+    def get_data_to_save_statistic
       user_name = get_user_name
-      p user_name
+      game_result = @status ? 'Win' : 'Loos'
       session_statistic = @game.turn_statistic
-      log = { user_name.to_s => [session_statistic, 'hints_get' => @game.hints] }
-      p log
-      File.write(PATH_TO_LOG_FILES, log.to_yaml)
+      log = { user_name.to_s => [
+                                session_statistic, 
+                                'hints_get' => @game.hints, 
+                                'Status of game' => game_result
+                                ] }
+      #p log
     end
 
     def get_user_name
